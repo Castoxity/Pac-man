@@ -1,5 +1,7 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
+const scoreEl = document.querySelector('#scoreEl')
+
 
 canvas.width = innerWidth
 canvas.height = innerHeight
@@ -89,6 +91,7 @@ const keys = {
     }
 }
 let lastKey = ''
+let score = 0
 
 function createImage(src) {
     const image = new Image ()
@@ -414,6 +417,8 @@ if(Math.hypot(pellet.position.x - player.position.x, pellet.position.y - player.
 {
     console.log('STRANGER DANGER')
     pellets.splice(i, 1)
+    score += 10
+    scoreEl.innerHTML = score
 }
 }
 
