@@ -110,7 +110,7 @@ function createImage(src) {
     ['|', '.', '[', ']', '.', '.', '.', '[', ']', '.', '|'],
     ['|', '.', '.', '.', '.', '^', '.', '.', '.', '.', '|'],
     ['|', '.', 'b', '.', '[', '5', ']', '.', 'b', '.', '|'],
-    ['|', '.', '.', '.', '.', '.', '.', '.', '.', 'p', '|'],
+    ['|', '.', '.', '.', '.', '.', '.', '.', '.', '.', '|'],
     ['4', '-', '-', '-', '-', '-', '-', '-', '-', '-', '3']
   ]
   
@@ -404,9 +404,20 @@ function animate(){
             }
           }
      }
-pellets.forEach(pellet => {
-    pellet.draw()
-})
+
+for (let i = pellets.length -1; 0<i; i--)
+{
+const pellet = pellets[i]
+pellet.draw()
+
+if(Math.hypot(pellet.position.x - player.position.x, pellet.position.y - player.position.y) < pellet.radius + player.radius)
+{
+    console.log('STRANGER DANGER')
+    pellets.splice(i, 1)
+}
+}
+
+
 
     boundaries.forEach(boundary => {
         boundary.draw()
@@ -451,8 +462,7 @@ animate()
             lastKey='d'
         break
     }
-    console.log(keys.d.pressed)
-    console.log(keys.s.pressed)
+  
  })
  
  addEventListener('keyup', ({key}) => {
@@ -471,6 +481,5 @@ animate()
             keys.d.pressed = false
         break
     }
-    console.log(keys.d.pressed)
-    console.log(keys.s.pressed)
+   
  })
