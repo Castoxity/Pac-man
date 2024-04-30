@@ -29,20 +29,31 @@ canvas.height = innerHeight
         this.position = position
         this.velocity = velocity
         this.radius = 15
+        this.radians = 0.75
+        this.openRate = 0.12
+        this.rotation = 0
     }
     draw(){
         // beginpath creates like arc...FOR THE PACMAN.......yes
+        c.save()
+        c.translate(this.position.x,this.position.y)
+        c.rotate(this.rotation)
+        c.translate(-this.position.x, -this.position.y)
         c.beginPath()
-        c.arc(this.position.x, this.position.y ,this.radius ,0 ,Math.PI * 2)
+        c.arc(this.position.x, this.position.y ,this.radius ,this.radians ,Math.PI * 2 - this.radians )
+        c.lineTo(this.position.x,this.position.y)
         c.fillStyle = 'yellow'
         c.fill()
         c.closePath()
-
+        c.restore()
         }
         update() {
             this.draw()
             this.position.x +=this.velocity.x
             this.position.y += this.velocity.y
+
+          if(this.radians < 0 || this.radians > 0.75) this.openRate = -this.openRate
+          this.radians += this.openRate
         }
     }
     class Ghost {
@@ -504,9 +515,15 @@ function animate(){
         else
         {
         cancelAnimationFrame(animationId)
-        console.log('Game over')
+        alert("game over")
       }
       }
+    }
+
+    if(pellets.length === 0)
+    {
+      alert('unbelieveable achievement indeed')
+      cancelAnimationFrame(animationId)
     }
 
      for (let i = powerUps.length -1; 0<=i; i--)
@@ -521,13 +538,13 @@ function animate(){
                 ghost.scared = true
                 setTimeout(() => {
                     ghost.scared = false
-                    console.log(ghost.scared)
+                    // console.log(ghost.scared)
                 },5000)
             })
         }
      }
 
-for (let i = pellets.length -1; 0<i; i--)
+for (let i = pellets.length -1; 0<=i; i--)
 {
 const pellet = pellets[i]
 pellet.draw()
@@ -561,12 +578,6 @@ if(Math.hypot(pellet.position.x - player.position.x, pellet.position.y - player.
      ghosts.forEach((ghost) => {
         ghost.update()
 
-        if(Math.hypot(ghost.position.x - player.position.x,
-             ghost.position.y - player.position.y) < ghost.radius + player.radius && !ghost.scared)
-            {
-                cancelAnimationFrame(animationId)
-                console.log('easy L') 
-            }
 
         const collisions = []
         boundaries.forEach(boundary => {
@@ -638,16 +649,16 @@ collisions.push('down')
             else if(ghost.velocity.y > 0) ghost.prevCollisions.push('down')
 
 
-            console.log(collisions)
-            console.log(ghost.prevCollisions)
+            // console.log(collisions)
+            // console.log(ghost.prevCollisions)
 
             const pathways = ghost.prevCollisions.filter(collision => {
                 return !collisions.includes(collision)
             })
-            console.log({pathways})
+            // console.log({pathways})
 
             const direction = pathways[Math.floor(Math.random() * pathways.length)]
-            console.log({direction})
+            // console.log({direction})
 
             switch (direction){
                 case 'down':
@@ -672,6 +683,11 @@ collisions.push('down')
         }
         // console.log(collisions)
      })
+
+     if(player.velocity.x>0) player.rotation=0
+     else if(player.velocity.x < 0) player.rotation = Math.PI
+     else if(player.velocity.y > 0) player.rotation = Math.PI / 2
+     else if(player.velocity.y < 0) player.rotation = Math.PI * 1.5
 
 }
 animate()
